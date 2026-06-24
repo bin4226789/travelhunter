@@ -1,37 +1,44 @@
 import os
-import asyncio
 from dotenv import load_dotenv
-from telegram import Bot
+from telegram import Update
+from telegram.ext import Application, CommandHandler, ContextTypes
+
+from cities import AUSTRALIA
+
+load_dotenv()
+
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 
-async def main():
-    load_dotenv()
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "Привет, Евгений!\n\n"
+        "TravelHunter работает.\n\n"
+        "Доступные команды:\n"
+        "/start\n"
+        "/cheap"
+    )
 
-    bot_token = os.getenv("BOT_TOKEN")
-    telegram_id = os.getenv("TELEGRAM_ID")
 
-    if not bot_token:
-        raise ValueError("BOT_TOKEN не найден в файле .env")
+async def cheap(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = "TravelHunter проверяет направления:\n\n"
 
-    if not telegram_id:
-        raise ValueError("TELEGRAM_ID не найден в файле .env")
+    for code, city in AUSTRALIA.items():
+        text += f"✈️ {city} ({code})\n"
 
-    bot = Bot(token=bot_token)
+    await update.message.reply_text(text)
 
-    await bot.send_message(
 
-    chat_id=telegram_id,
+def main():
+    app = Application.builder().token(BOT_TOKEN).build()
 
-    text="Привет, Евгений! TravelHunter запущен 🚀",
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("cheap", cheap))
 
-    connect_timeout=30,
+    print("TravelHunter запущен")
 
-    read_timeout=30
-
-)
-
-    print("Сообщение отправлено в Telegram")
+    app.run_polling()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
