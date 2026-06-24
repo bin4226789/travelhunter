@@ -1,4 +1,4 @@
-AUSTRALIA = {
+AUSTRALIA_ORIGINS = {
     "PVG": "Шанхай",
     "ICN": "Сеул",
     "BKK": "Бангкок",

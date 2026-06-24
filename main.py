@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
-from cities import AUSTRALIA
+from cities import AUSTRALIA_ORIGINS, AUSTRALIA_DESTINATIONS
 
 load_dotenv()
 
@@ -21,10 +21,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def cheap(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = "TravelHunter проверяет направления:\n\n"
+    text = "TravelHunter проверяет маршруты:\n\n"
 
-    for code, city in AUSTRALIA.items():
-        text += f"✈️ {city} ({code})\n"
+    for origin_code, origin_city in AUSTRALIA_ORIGINS.items():
+        for dest_code, dest_city in AUSTRALIA_DESTINATIONS.items():
+            text += f"✈️ {origin_city} ({origin_code}) → {dest_city} ({dest_code})\n"
 
     await update.message.reply_text(text)
 
